@@ -1,0 +1,109 @@
+const User = require('../models/User');
+const Subscription = require('../models/Subscription');
+const Workout = require('../models/Workout');
+const Progress = require('../models/Progress');
+
+// @desc    Get dashboard stats
+// @route   GET /api/admin/stats
+exports.getStats = async (req, res) => {
+  try {
+    const userCount = await User.countDocuments({ role: 'user' });
+    const activeSubCount = await User.countDocuments({ 
+      role: 'user', 
+      subscription: { $ne: null } 
+    });
+    const workoutCount = await Workout.countDocuments();
+    const subscriptionCount = await Subscription.countDocuments();
+
+    // Get recent members
+    const recentMembers = await User.find({ role: 'user' })
+      .sort({ createdAt: -1 })
+      .limit(5)
+      .select('name email createdAt');
+
+    res.json({
+      userCount,
+      activeSubCount,
+      workoutCount,
+      subscriptionCount,
+      recentMembers,
+    });
+  } catch (error) {
+    console.error('GetStats error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// @desc    Get all users
+// @route   GET /api/admin/users
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find({ role: 'user' })
+      .populate('subscription')
+      .sort({ createdAt: -1 });
+    res.json(users);
+  } catch (error) {
+    console.error('GetAllUsers error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// @desc    Get user by ID with all details
+// @route   GET /api/admin/users/:id
+exports.getUserDetails = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).populate('subscription');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const progress = await Progress.find({ user: user._id }).sort({ date: -1 });
+
+    res.json({
+      user,
+      progress,
+    });
+  } catch (error) {
+    console.error('GetUserDetails error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// @desc    Update user status
+// @route   PUT /api/admin/users/:id/status
+exports.updateUserStatus = async (req, res) => {
+  try {
+    const { isActive } = req.body;
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    user.isActive = isActive;
+    await user.save();
+    res.json(user);
+  } catch (error) {
+    console.error('UpdateUserStatus error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
+
+// @desc    Delete user
+// @route   DELETE /api/admin/users/:id
+exports.deleteUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Delete user's progress records too
+    await Progress.deleteMany({ user: user._id });
+    await user.deleteOne();
+    
+    res.json({ message: 'User and all related records deleted' });
+  } catch (error) {
+    console.error('DeleteUser error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
