@@ -41,6 +41,11 @@ const userSchema = new mongoose.Schema({
     enum: ['cut', 'bulk', 'healthy', null],
     default: null,
   },
+  gymExperience: {
+    type: String,
+    enum: ['first_time', '1-6_months', '6+_months', null],
+    default: null,
+  },
   dietPreference: {
     type: String,
     enum: ['veg', 'non-veg', null],

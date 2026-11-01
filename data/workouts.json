@@ -1,0 +1,127 @@
+[
+  {
+    "name": "Upper Body Power (Upper/Lower)",
+    "description": "Focuses on chest, back, shoulders, and arms.",
+    "goal": "upper body",
+    "difficulty": "intermediate",
+    "day": "Monday",
+    "duration": 60,
+    "exercises": [
+      { "name": "Bench Press", "sets": 4, "reps": "8-10", "rest": "90s" },
+      { "name": "Pull-Ups / Lat Pulldown", "sets": 4, "reps": "8-10", "rest": "90s" },
+      { "name": "Overhead Press", "sets": 3, "reps": "8-10", "rest": "90s" },
+      { "name": "Barbell Row", "sets": 3, "reps": "8-10", "rest": "60s" }
+    ]
+  },
+  {
+    "name": "Lower Body Strength (Upper/Lower)",
+    "description": "Focuses on quads, hamstrings, glutes, and calves.",
+    "goal": "lower body",
+    "difficulty": "intermediate",
+    "day": "Tuesday",
+    "duration": 60,
+    "exercises": [
+      { "name": "Barbell Squat", "sets": 4, "reps": "6-8", "rest": "120s" },
+      { "name": "Romanian Deadlift", "sets": 4, "reps": "8-10", "rest": "90s" },
+      { "name": "Leg Press", "sets": 3, "reps": "10-12", "rest": "60s" }
+    ]
+  },
+  {
+    "name": "Push Day (PPL)",
+    "description": "Chest, Shoulders, and Triceps workout.",
+    "goal": "upper body",
+    "difficulty": "intermediate",
+    "day": "Monday",
+    "duration": 60,
+    "exercises": [
+      { "name": "Flat Bench Press", "sets": 4, "reps": "8-10", "rest": "90s" },
+      { "name": "Overhead Press", "sets": 3, "reps": "8-10", "rest": "90s" },
+      { "name": "Lateral Raises", "sets": 4, "reps": "15", "rest": "45s" }
+    ]
+  },
+  {
+    "name": "Pull Day (PPL)",
+    "description": "Back, Biceps, and Rear Delts workout.",
+    "goal": "upper body",
+    "difficulty": "intermediate",
+    "day": "Tuesday",
+    "duration": 60,
+    "exercises": [
+      { "name": "Deadlift", "sets": 3, "reps": "5", "rest": "120s" },
+      { "name": "Pull-Ups", "sets": 3, "reps": "To failure", "rest": "90s" },
+      { "name": "Barbell Row", "sets": 3, "reps": "8-10", "rest": "90s" }
+    ]
+  },
+  {
+    "name": "Legs Day (PPL)",
+    "description": "Quads, Hamstrings, and Calves workout.",
+    "goal": "lower body",
+    "difficulty": "intermediate",
+    "day": "Wednesday",
+    "duration": 60,
+    "exercises": [
+      { "name": "Barbell Back Squat", "sets": 4, "reps": "8-10", "rest": "120s" },
+      { "name": "Leg Press", "sets": 3, "reps": "10-12", "rest": "90s" }
+    ]
+  },
+  {
+    "name": "Chest Day (Bro Split)",
+    "description": "Dedicated chest hypertrophy workout.",
+    "goal": "upper body",
+    "difficulty": "intermediate",
+    "day": "Monday",
+    "duration": 60,
+    "exercises": [
+      { "name": "Barbell Bench Press", "sets": 4, "reps": "8-10", "rest": "90s" },
+      { "name": "Incline Dumbbell Press", "sets": 4, "reps": "10-12", "rest": "60s" }
+    ]
+  },
+  {
+    "name": "Back Day (Bro Split)",
+    "description": "Dedicated back hypertrophy workout.",
+    "goal": "upper body",
+    "difficulty": "intermediate",
+    "day": "Tuesday",
+   " duration": 60,
+    "exercises": [
+      { "name": "Deadlift", "sets": 3, "reps": "5", "rest": "120s" },
+      { "name": "Pull-Ups", "sets": 3, "reps": "8-10", "rest": "90s" }
+    ]
+  },
+  {
+    "name": "Shoulders Day (Bro Split)",
+    "description": "Dedicated shoulder hypertrophy workout.",
+   " goal": "upper body",
+    "difficulty": "intermediate",
+    "day": "Wednesday",
+    "duration": 60,
+    "exercises": [
+      { "name": "Seated Dumbbell Shoulder Press", "sets": 4, "reps": "8-10", "rest": "90s" },
+      { "name": "Dumbbell Lateral Raises", "sets": 5, "reps": "15", "rest": "45s" }
+    ]
+  },
+  {
+    "name": "Arms Day (Bro Split)",
+    "description": "Dedicated biceps and triceps workout.",
+    "goal": "upper body",
+    "difficulty": "intermediate",
+    "day": "Thursday",
+    "duration":50,
+    "exercises": [
+      { "name": "Barbell Bicep Curls", "sets": 3, "reps": "10", "rest": "60s" },
+      { "name": "Skull Crushers", "sets": 3, "reps": "10", "rest": "60s" }
+    ]
+  },
+  {
+    "name": "Legs Day (Bro Split)",
+    "description": "Dedicated leg hypertrophy workout.",
+   " goal": "lower body",
+    "difficulty": "intermediate",
+   " day": "Friday",
+    "duration": 60,
+    "exercises": [
+      { "name": "Barbell Back Squat", "sets": 4, "reps": "8-10", "rest": "120s" },
+      { "name": "Leg Press", "sets": 3, "reps": "10-12", "rest": "90s" }
+    ]
+  }
+]

@@ -32,3 +32,11 @@ export const deleteProgressLog = (id) => axios.delete(`${API_URL}/progress/${id}
 // User API
 export const updateUserPreferences = (data) => 
   axios.put(`${API_URL}/users/preferences`, data);
+
+// Gym Owner / Admin API
+export const getAdminStats = () => axios.get(`${API_URL}/admin/stats`);
+export const getAdminUsers = () => axios.get(`${API_URL}/admin/users`);
+export const updateAdminUserStatus = (id, isActive) => 
+  axios.put(`${API_URL}/admin/users/${id}/status`, { isActive });
+export const deleteAdminUser = (id) => 
+  axios.delete(`${API_URL}/admin/users/${id}`);

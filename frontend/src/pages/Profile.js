@@ -9,6 +9,7 @@ const Profile = () => {
     weight: user?.weight || '',
     height: user?.height || '',
     goal: user?.goal || '',
+    gymExperience: user?.gymExperience || '',
     dietPreference: user?.dietPreference || '',
   });
   const [saving, setSaving] = useState(false);

@@ -9,6 +9,7 @@ import WorkoutDetail from './pages/WorkoutDetail';
 import Schedule from './pages/Schedule';
 import Progress from './pages/Progress';
 import Profile from './pages/Profile';
+import AdminDashboard from './pages/AdminDashboard';
 import Navbar from './components/Navbar';
 
 function App() {
@@ -21,7 +22,7 @@ function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <div className="pt-16">
+                <div className="pt-16 pb-16 md:pb-0">
                   <Navbar />
                   <Dashboard />
                 </div>
@@ -32,7 +33,7 @@ function App() {
             path="/workouts"
             element={
               <ProtectedRoute>
-                <div className="pt-16">
+                <div className="pt-16 pb-16 md:pb-0">
                   <Navbar />
                   <Workouts />
                 </div>
@@ -43,7 +44,8 @@ function App() {
             path="/workouts/:id"
             element={
               <ProtectedRoute>
-                <div className="pt-16">
+                <div className="pt-16 pb-16 md:pb-0">
+                  <Navbar />
                   <WorkoutDetail />
                 </div>
               </ProtectedRoute>
@@ -53,7 +55,7 @@ function App() {
             path="/schedule"
             element={
               <ProtectedRoute>
-                <div className="pt-16">
+                <div className="pt-16 pb-16 md:pb-0">
                   <Navbar />
                   <Schedule />
                 </div>
@@ -64,7 +66,7 @@ function App() {
             path="/progress"
             element={
               <ProtectedRoute>
-                <div className="pt-16">
+                <div className="pt-16 pb-16 md:pb-0">
                   <Navbar />
                   <Progress />
                 </div>
@@ -75,9 +77,20 @@ function App() {
             path="/profile"
             element={
               <ProtectedRoute>
-                <div className="pt-16">
+                <div className="pt-16 pb-16 md:pb-0">
                   <Navbar />
                   <Profile />
+                </div>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <div className="pt-16 pb-16 md:pb-0">
+                  <Navbar />
+                  <AdminDashboard />
                 </div>
               </ProtectedRoute>
             }
