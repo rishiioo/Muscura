@@ -1,16 +1,22 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
-import ProtectedRoute from './components/ProtectedRoute';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import Workouts from './pages/Workouts';
-import WorkoutDetail from './pages/WorkoutDetail';
-import Schedule from './pages/Schedule';
-import Progress from './pages/Progress';
-import Profile from './pages/Profile';
-import AdminDashboard from './pages/AdminDashboard';
-import Navbar from './components/Navbar';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { AuthProvider, useAuth } from "./context/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Login from "./pages/Login";
+import LandingPage from "./pages/LandingPage";
+import Dashboard from "./pages/Dashboard";
+import Workouts from "./pages/Workouts";
+import WorkoutDetail from "./pages/WorkoutDetail";
+import Schedule from "./pages/Schedule";
+import Progress from "./pages/Progress";
+import Profile from "./pages/Profile";
+import AdminDashboard from "./pages/AdminDashboard";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
@@ -18,8 +24,9 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/" element={<LandingPage />} />
           <Route
-            path="/"
+            path="/dashboard"
             element={
               <ProtectedRoute>
                 <div className="pt-16 pb-16 md:pb-0">
