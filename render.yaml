@@ -1,0 +1,38 @@
+services:
+  # Backend Service
+  - type: web
+    name: muscura-backend
+    env: node
+    plan: free
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGODB_URI
+        fromValue: mongodb+srv://xisco55:xisco123098@cluster0.naonokj.mongodb.net/muscura
+      - key: JWT_SECRET
+        fromValue: muscura_secret_key_2024
+      - key: EMAIL_USER
+        fromValue: xisco@gmail.com
+      - key: EMAIL_PASS
+        fromValue: xisco@123098
+
+  # Frontend (Static Site) - Optional if you use Vercel
+  - type: static
+    name: muscura-frontend
+    env: static
+    buildCommand: cd frontend && npm install && npm run build
+    publishPath: frontend/build
+    envVars:
+      - key: REACT_APP_API_URL
+        value: https://muscura-backend.onrender.com/api
+    routes:
+      - type: rewrite
+        source: /api/*
+        destination: https://muscura-backend.onrender.com/api/*
+      - type: rewrite
+        source: /*
+        destination: /index.html
