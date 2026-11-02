@@ -2,10 +2,9 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 import axios from 'axios';
 
-axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 
-const API_URL = 'https://muscura-backend.onrender.com/api';
 
+const API_URL = process.env.REACT_APP_API_URL || 'https://muscura-backend.onrender.com/api';
 const AuthContext = createContext({});
 
 export const useAuth = () => {
