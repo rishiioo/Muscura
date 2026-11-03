@@ -19,6 +19,8 @@ services:
         sync: false
       - key: EMAIL_PASS
         sync: false
+      - key: CLIENT_URL
+        value: https://muscura-t55d.vercel.app
 
   # Frontend (Static Site) - Optional if you use Vercel
   - type: static

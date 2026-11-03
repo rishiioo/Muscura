@@ -37,12 +37,18 @@ app.use(helmet());
 const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.replace(/\/$/, '') : '';
 const isDev = process.env.NODE_ENV !== 'production';
 
+// Allow Vercel deployments (production + previews) since the frontend is hosted there.
+const isVercelOrigin = (origin) => /\.vercel\.app$/.test(origin);
+
 const corsOptions = {
   origin: (origin, callback) => {
+    // Allow non-browser requests (no Origin header) and server-to-server calls.
     if (!origin) return callback(null, true);
     const cleanOrigin = origin.replace(/\/$/, '');
     if (clientUrl && cleanOrigin === clientUrl) return callback(null, true);
     if (isDev && cleanOrigin === 'http://localhost:3000') return callback(null, true);
+    // Echo the origin back (required when credentials: true, cannot use '*').
+    if (isVercelOrigin(cleanOrigin)) return callback(null, cleanOrigin);
     return callback(null, false);
   },
   credentials: true
