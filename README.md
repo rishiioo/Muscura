@@ -33,8 +33,8 @@ A comprehensive MERN stack (MongoDB, Express, React, Node.js) gym management app
 
 ### 🔔 Subscription Management
 - Multiple subscription plans
-- Automatic renewal tracking
-- Reminder system (email/SMS)
+- Expiry tracking and automated daily email reminders
+- Welcome emails for new registrations
 
 ### 🧑‍💼 Admin Panel
 - Manage members and subscriptions
@@ -93,6 +93,10 @@ Create a `.env` file:
 PORT=5000
 MONGODB_URI=mongodb://localhost:27017/muscura
 JWT_SECRET=your_jwt_secret_key
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_gmail_app_password
+CLIENT_URL=http://localhost:3000
+ENABLE_CRON=true
 ```
 
 Start the backend server:
@@ -172,7 +176,7 @@ Create an admin user by adding this to your database:
 MIT License
 
 ## Future Enhancements
-- Email/SMS notifications
+- SMS notifications
 - Payment integration (Stripe)
 - Mobile app (React Native)
 - Video workout integration

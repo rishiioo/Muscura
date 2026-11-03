@@ -20,6 +20,13 @@ if (!process.env.JWT_SECRET || !process.env.MONGODB_URI) {
 // Connect to database
 connectDB();
 
+// Start cron job for expiry reminders if production or ENABLE_CRON=true
+const startExpiryReminder = require('./jobs/expiryReminder');
+if (process.env.NODE_ENV === 'production' || process.env.ENABLE_CRON === 'true') {
+  startExpiryReminder();
+  console.log('Subscription expiry reminder cron job started.');
+}
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 

@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Subscription = require('../models/Subscription');
+const sendEmail = require('../utils/mailer');
 
 // Generate JWT token
 const generateToken = (id) => {
@@ -24,6 +25,13 @@ exports.register = async (req, res) => {
 
     user = new User({ name, email, password, phone });
     await user.save();
+
+    // Send non-blocking welcome email
+    sendEmail(
+      email,
+      'Welcome to Muscura!',
+      `Hi ${name},\n\nWelcome to Muscura! We're excited to help you achieve your fitness goals.\n\nBest regards,\nMuscura Team`
+    ).catch(err => console.error('Welcome email failed:', err));
 
     const token = generateToken(user._id);
 
