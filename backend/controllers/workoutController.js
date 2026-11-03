@@ -1,10 +1,10 @@
 const Workout = require('../models/Workout');
 
-// @desc    Get all workouts with filtering
+// @desc    Get all workouts with filtering and pagination
 // @route   GET /api/workouts
 exports.getWorkouts = async (req, res) => {
   try {
-    const { goal, difficulty, day, search } = req.query;
+    const { goal, difficulty, day, search, page = 1, limit = 12 } = req.query;
     let query = {};
 
     if (goal) query.goal = goal;
@@ -17,8 +17,19 @@ exports.getWorkouts = async (req, res) => {
       ];
     }
 
-    const workouts = await Workout.find(query).sort({ createdAt: -1 });
-    res.json(workouts);
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const total = await Workout.countDocuments(query);
+    const workouts = await Workout.find(query)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    res.json({
+      data: workouts,
+      page: parseInt(page),
+      totalPages: Math.ceil(total / parseInt(limit)),
+      total,
+    });
   } catch (error) {
     console.error('GetWorkouts error:', error);
     res.status(500).json({ message: "Server error" });

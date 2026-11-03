@@ -36,15 +36,27 @@ exports.getStats = async (req, res) => {
   }
 };
 
-// @desc    Get all users
+// @desc    Get all users with pagination
 // @route   GET /api/admin/users
 exports.getAllUsers = async (req, res) => {
   try {
+    const { page = 1, limit = 20 } = req.query;
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const total = await User.countDocuments({ role: 'user' });
     const users = await User.find({ role: 'user' })
       .select('-password')
       .populate('subscription')
-      .sort({ createdAt: -1 });
-    res.json(users);
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
+
+    res.json({
+      data: users,
+      page: parseInt(page),
+      totalPages: Math.ceil(total / parseInt(limit)),
+      total,
+    });
   } catch (error) {
     console.error('GetAllUsers error:', error);
     res.status(500).json({ message: "Server error" });
