@@ -93,12 +93,20 @@ exports.purchaseSubscription = async (req, res) => {
       return res.status(404).json({ message: 'User not found' });
     }
 
+    const startDate = new Date();
+    const endDate = new Date();
+    endDate.setDate(endDate.getDate() + subscription.duration);
+
     user.subscription = subscription._id;
+    user.subscriptionStart = startDate;
+    user.subscriptionEnd = endDate;
     await user.save();
 
     res.json({
       message: 'Subscription purchased successfully',
       subscription,
+      subscriptionStart: startDate,
+      subscriptionEnd: endDate,
       user: {
         _id: user._id,
         name: user.name,
@@ -116,20 +124,23 @@ exports.purchaseSubscription = async (req, res) => {
 exports.getMySubscription = async (req, res) => {
   try {
     const user = await User.findById(req.user.id).populate('subscription');
-    if (!user.subscription) {
-      return res.json({ subscription: null, message: 'No active subscription' });
+    if (!user.subscription || !user.subscriptionEnd) {
+      return res.json({ subscription: null, expired: true, message: 'No active subscription' });
     }
 
     const subscription = user.subscription;
-    const startDate = user.createdAt;
-    const endDate = new Date(startDate);
-    endDate.setDate(endDate.getDate() + subscription.duration);
+    const startDate = user.subscriptionStart || user.createdAt;
+    const endDate = user.subscriptionEnd;
+    const now = new Date();
+    const expired = now > endDate;
+    const daysRemaining = Math.max(0, Math.ceil((endDate - now) / (1000 * 60 * 60 * 24)));
 
     res.json({
       subscription,
       startDate,
       endDate,
-      daysRemaining: Math.ceil((endDate - new Date()) / (1000 * 60 * 60 * 24)),
+      daysRemaining,
+      expired,
     });
   } catch (error) {
     res.status(500).json({ message: "Server error" });

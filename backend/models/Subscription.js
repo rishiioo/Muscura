@@ -36,12 +36,4 @@ const subscriptionSchema = new mongoose.Schema({
   },
 });
 
-// Virtual for end date
-subscriptionSchema.virtual('endDate').get(function () {
-  if (!this.startDate) return null;
-  const endDate = new Date(this.startDate);
-  endDate.setDate(endDate.getDate() + this.duration);
-  return endDate;
-});
-
 module.exports = mongoose.model('Subscription', subscriptionSchema);

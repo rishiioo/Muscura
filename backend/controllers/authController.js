@@ -51,6 +51,10 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
+    if (user.isActive === false) {
+      return res.status(403).json({ message: 'Account deactivated' });
+    }
+
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
       return res.status(400).json({ message: 'Invalid credentials' });
@@ -107,19 +111,20 @@ exports.getMe = async (req, res) => {
 // @route   PUT /api/auth/profile
 exports.updateProfile = async (req, res) => {
   try {
-    const { name, phone, weight, height, goal, dietPreference } = req.body;
+    const { name, phone, weight, height, goal, dietPreference, gymExperience } = req.body;
 
     const user = await User.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    user.name = name || user.name;
-    user.phone = phone || user.phone;
+    user.name = name !== undefined ? name : user.name;
+    user.phone = phone !== undefined ? phone : user.phone;
     user.weight = weight !== undefined ? weight : user.weight;
     user.height = height !== undefined ? height : user.height;
-    user.goal = goal || user.goal;
-    user.dietPreference = dietPreference || user.dietPreference;
+    user.goal = goal !== undefined ? goal : user.goal;
+    user.dietPreference = dietPreference !== undefined ? dietPreference : user.dietPreference;
+    user.gymExperience = gymExperience !== undefined ? gymExperience : user.gymExperience;
 
     const updatedUser = await user.save();
 
@@ -132,6 +137,7 @@ exports.updateProfile = async (req, res) => {
       weight: updatedUser.weight,
       height: updatedUser.height,
       goal: updatedUser.goal,
+      gymExperience: updatedUser.gymExperience,
       dietPreference: updatedUser.dietPreference,
       subscription: updatedUser.subscription,
     });

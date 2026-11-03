@@ -112,9 +112,18 @@ exports.deleteWorkout = async (req, res) => {
 // @route   GET /api/workouts/recommend
 exports.getRecommendedWorkouts = async (req, res) => {
   try {
-    const { goal, difficulty, dietPreference } = req.query;
+    const { goal, difficulty, dietPreference, gymExperience } = req.query;
 
-    // Map goals to workout types
+    // Determine effective difficulty from gymExperience if provided
+    let effectiveDifficulty = difficulty;
+    if (gymExperience) {
+      if (gymExperience === 'first_time') effectiveDifficulty = 'beginner';
+      else if (gymExperience === '1-6_months') effectiveDifficulty = 'intermediate';
+      else if (gymExperience === '6+_months') effectiveDifficulty = 'advanced';
+    }
+    effectiveDifficulty = effectiveDifficulty || 'beginner';
+
+    // Map goals to workout splits (ordered by priority)
     let workoutGoals = [];
     if (goal === 'cut') {
       workoutGoals = ['full body', 'upper body', 'lower body'];
@@ -128,11 +137,25 @@ exports.getRecommendedWorkouts = async (req, res) => {
 
     const query = {
       goal: { $in: workoutGoals },
-      difficulty: difficulty || 'beginner',
+      difficulty: effectiveDifficulty,
     };
 
     const workouts = await Workout.find(query).sort({ day: 1 });
-    res.json(workouts);
+
+    // Diet tip based on preference
+    const dietTips = {
+      veg: 'Focus on plant-based proteins like lentils, chickpeas, and tofu for recovery.',
+      'non-veg': 'Include lean chicken breast, fish, or eggs to support muscle growth.',
+    };
+    const dietTip = dietTips[dietPreference] || 'Stay hydrated and balance your macros.';
+
+    // Attach diet tip to each workout (keep existing response shape)
+    const personalized = workouts.map((w) => ({
+      ...w.toObject(),
+      dietTip,
+    }));
+
+    res.json(personalized);
   } catch (error) {
     console.error('GetRecommendedWorkouts error:', error);
     res.status(500).json({ message: "Server error" });

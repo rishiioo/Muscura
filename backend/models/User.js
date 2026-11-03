@@ -56,6 +56,14 @@ const userSchema = new mongoose.Schema({
     ref: 'Subscription',
     default: null,
   },
+  subscriptionStart: {
+    type: Date,
+    default: null,
+  },
+  subscriptionEnd: {
+    type: Date,
+    default: null,
+  },
   isActive: {
     type: Boolean,
     default: true,

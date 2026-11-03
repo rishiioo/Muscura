@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const User = require('../models/User');
 const Subscription = require('../models/Subscription');
 const Workout = require('../models/Workout');
@@ -8,9 +9,10 @@ const Progress = require('../models/Progress');
 exports.getStats = async (req, res) => {
   try {
     const userCount = await User.countDocuments({ role: 'user' });
-    const activeSubCount = await User.countDocuments({ 
-      role: 'user', 
-      subscription: { $ne: null } 
+    const activeSubCount = await User.countDocuments({
+      role: 'user',
+      subscription: { $ne: null },
+      subscriptionEnd: { $gt: new Date() }
     });
     const workoutCount = await Workout.countDocuments();
     const subscriptionCount = await Subscription.countDocuments();
@@ -53,6 +55,10 @@ exports.getAllUsers = async (req, res) => {
 // @route   GET /api/admin/users/:id
 exports.getUserDetails = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
     const user = await User.findById(req.params.id)
       .select('-password')
       .populate('subscription');
@@ -76,6 +82,10 @@ exports.getUserDetails = async (req, res) => {
 // @route   PUT /api/admin/users/:id/status
 exports.updateUserStatus = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
     const { isActive } = req.body;
     const user = await User.findById(req.params.id);
     if (!user) {
@@ -95,6 +105,10 @@ exports.updateUserStatus = async (req, res) => {
 // @route   DELETE /api/admin/users/:id
 exports.deleteUser = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ message: 'Invalid user ID' });
+    }
+
     const user = await User.findById(req.params.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
