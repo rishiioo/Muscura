@@ -15,7 +15,7 @@ exports.getProgressLogs = async (req, res) => {
     res.json(progress);
   } catch (error) {
     console.error('GetProgressLogs error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -36,7 +36,7 @@ exports.addProgressLog = async (req, res) => {
     res.status(201).json(savedProgress);
   } catch (error) {
     console.error('AddProgressLog error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -65,7 +65,7 @@ exports.updateProgressLog = async (req, res) => {
     res.json(updatedProgress);
   } catch (error) {
     console.error('UpdateProgressLog error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -87,7 +87,7 @@ exports.deleteProgressLog = async (req, res) => {
     res.json({ message: 'Progress log deleted successfully' });
   } catch (error) {
     console.error('DeleteProgressLog error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -102,6 +102,6 @@ exports.getWeightChart = async (req, res) => {
     res.json(progress);
   } catch (error) {
     console.error('GetWeightChart error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };

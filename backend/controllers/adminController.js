@@ -30,7 +30,7 @@ exports.getStats = async (req, res) => {
     });
   } catch (error) {
     console.error('GetStats error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -39,12 +39,13 @@ exports.getStats = async (req, res) => {
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find({ role: 'user' })
+      .select('-password')
       .populate('subscription')
       .sort({ createdAt: -1 });
     res.json(users);
   } catch (error) {
     console.error('GetAllUsers error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -52,7 +53,9 @@ exports.getAllUsers = async (req, res) => {
 // @route   GET /api/admin/users/:id
 exports.getUserDetails = async (req, res) => {
   try {
-    const user = await User.findById(req.params.id).populate('subscription');
+    const user = await User.findById(req.params.id)
+      .select('-password')
+      .populate('subscription');
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -65,7 +68,7 @@ exports.getUserDetails = async (req, res) => {
     });
   } catch (error) {
     console.error('GetUserDetails error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -84,7 +87,7 @@ exports.updateUserStatus = async (req, res) => {
     res.json(user);
   } catch (error) {
     console.error('UpdateUserStatus error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -104,6 +107,6 @@ exports.deleteUser = async (req, res) => {
     res.json({ message: 'User and all related records deleted' });
   } catch (error) {
     console.error('DeleteUser error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };

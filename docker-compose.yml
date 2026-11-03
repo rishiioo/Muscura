@@ -5,13 +5,10 @@ services:
     build: ./backend
     ports:
       - "5000:5000"
+    env_file: ./backend/.env
     environment:
       - NODE_ENV=production
       - PORT=5000
-      - MONGODB_URI=mongodb+srv://xisco55:xisco123098@cluster0.naonokj.mongodb.net/muscura
-      - JWT_SECRET=muscura_secret_key_2024
-      - EMAIL_USER=xisco@gmail.com
-      - EMAIL_PASS=xisco@123098
     volumes:
       - ./backend:/app
       - /app/node_modules

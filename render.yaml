@@ -12,13 +12,13 @@ services:
       - key: PORT
         value: 10000
       - key: MONGODB_URI
-        fromValue: mongodb+srv://xisco55:xisco123098@cluster0.naonokj.mongodb.net/muscura
+        sync: false
       - key: JWT_SECRET
-        fromValue: muscura_secret_key_2024
+        sync: false
       - key: EMAIL_USER
-        fromValue: xisco@gmail.com
+        sync: false
       - key: EMAIL_PASS
-        fromValue: xisco@123098
+        sync: false
 
   # Frontend (Static Site) - Optional if you use Vercel
   - type: static

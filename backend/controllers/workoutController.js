@@ -21,7 +21,7 @@ exports.getWorkouts = async (req, res) => {
     res.json(workouts);
   } catch (error) {
     console.error('GetWorkouts error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -36,7 +36,7 @@ exports.getWorkoutById = async (req, res) => {
     res.json(workout);
   } catch (error) {
     console.error('GetWorkoutById error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -60,7 +60,7 @@ exports.createWorkout = async (req, res) => {
     res.status(201).json(savedWorkout);
   } catch (error) {
     console.error('CreateWorkout error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -87,7 +87,7 @@ exports.updateWorkout = async (req, res) => {
     res.json(updatedWorkout);
   } catch (error) {
     console.error('UpdateWorkout error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -104,7 +104,7 @@ exports.deleteWorkout = async (req, res) => {
     res.json({ message: 'Workout deleted successfully' });
   } catch (error) {
     console.error('DeleteWorkout error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -135,6 +135,6 @@ exports.getRecommendedWorkouts = async (req, res) => {
     res.json(workouts);
   } catch (error) {
     console.error('GetRecommendedWorkouts error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };

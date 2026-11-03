@@ -5,7 +5,7 @@ const Subscription = require('../models/Subscription');
 
 // Generate JWT token
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET || 'muscura_secret_key_2024', {
+  return jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: '30d',
   });
 };
@@ -36,7 +36,7 @@ exports.register = async (req, res) => {
     });
   } catch (error) {
     console.error('Register error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -72,7 +72,7 @@ exports.login = async (req, res) => {
     });
   } catch (error) {
     console.error('Login error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -99,7 +99,7 @@ exports.getMe = async (req, res) => {
     });
   } catch (error) {
     console.error('GetMe error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -137,7 +137,7 @@ exports.updateProfile = async (req, res) => {
     });
   } catch (error) {
     console.error('UpdateProfile error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -164,6 +164,6 @@ exports.changePassword = async (req, res) => {
     res.json({ message: 'Password updated successfully' });
   } catch (error) {
     console.error('ChangePassword error:', error);
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };

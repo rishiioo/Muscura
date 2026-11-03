@@ -5,9 +5,17 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
+const helmet = require('helmet');
+const rateLimit = require('express-rate-limit');
 const connectDB = require('./config/db');
 
 dotenv.config({ path: path.join(__dirname, '.env') });
+
+// Environment variable validation
+if (!process.env.JWT_SECRET || !process.env.MONGODB_URI) {
+  console.error('FATAL ERROR: JWT_SECRET or MONGODB_URI is not defined in environment variables.');
+  process.exit(1);
+}
 
 // Connect to database
 connectDB();
@@ -15,8 +23,49 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Security Middlewares
+app.use(helmet());
+
+// CORS configuration
+const clientUrl = process.env.CLIENT_URL;
+const isDev = process.env.NODE_ENV !== 'production';
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (clientUrl && origin === clientUrl) return callback(null, true);
+    if (isDev && origin === 'http://localhost:3000') return callback(null, true);
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true
+};
+app.use(cors(corsOptions));
+
+// Rate limiting
+const generalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Too many requests, please try again later.' }
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: 'Too many login/register attempts, please try again after 15 minutes' }
+});
+
+// Apply general rate limit to all requests
+app.use(generalLimiter);
+
+// Apply strict rate limit to login and register routes
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
+
 // Middleware
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -43,7 +92,7 @@ app.use('/api/admin', adminRoutes);
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong!' });
+  res.status(500).json({ message: 'Server error' });
 });
 
 app.listen(PORT, () => {

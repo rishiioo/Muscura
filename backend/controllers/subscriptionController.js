@@ -8,7 +8,7 @@ exports.getSubscriptions = async (req, res) => {
     const subscriptions = await Subscription.find({ isActive: true }).sort({ price: 1 });
     res.json(subscriptions);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -22,7 +22,7 @@ exports.getSubscriptionById = async (req, res) => {
     }
     res.json(subscription);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -35,7 +35,7 @@ exports.createSubscription = async (req, res) => {
     const savedSubscription = await subscription.save();
     res.status(201).json(savedSubscription);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -57,7 +57,7 @@ exports.updateSubscription = async (req, res) => {
     const updatedSubscription = await subscription.save();
     res.json(updatedSubscription);
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -72,7 +72,7 @@ exports.deleteSubscription = async (req, res) => {
     await subscription.deleteOne();
     res.json({ message: 'Subscription deleted successfully' });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -107,7 +107,7 @@ exports.purchaseSubscription = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
 
@@ -132,6 +132,6 @@ exports.getMySubscription = async (req, res) => {
       daysRemaining: Math.ceil((endDate - new Date()) / (1000 * 60 * 60 * 24)),
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error', error: error.message });
+    res.status(500).json({ message: "Server error" });
   }
 };
