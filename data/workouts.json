@@ -4,6 +4,7 @@
     "description": "Focuses on chest, back, shoulders, and arms.",
     "goal": "upper body",
     "difficulty": "intermediate",
+    "planType": "upper",
     "day": "Monday",
     "duration": 60,
     "exercises": [
@@ -18,6 +19,7 @@
     "description": "Focuses on quads, hamstrings, glutes, and calves.",
     "goal": "lower body",
     "difficulty": "intermediate",
+    "planType": "lower",
     "day": "Tuesday",
     "duration": 60,
     "exercises": [
@@ -31,6 +33,7 @@
     "description": "Chest, Shoulders, and Triceps workout.",
     "goal": "upper body",
     "difficulty": "intermediate",
+    "planType": "upper",
     "day": "Monday",
     "duration": 60,
     "exercises": [
@@ -44,6 +47,7 @@
     "description": "Back, Biceps, and Rear Delts workout.",
     "goal": "upper body",
     "difficulty": "intermediate",
+    "planType": "upper",
     "day": "Tuesday",
     "duration": 60,
     "exercises": [
@@ -57,6 +61,7 @@
     "description": "Quads, Hamstrings, and Calves workout.",
     "goal": "lower body",
     "difficulty": "intermediate",
+    "planType": "lower",
     "day": "Wednesday",
     "duration": 60,
     "exercises": [
@@ -69,6 +74,7 @@
     "description": "Dedicated chest hypertrophy workout.",
     "goal": "upper body",
     "difficulty": "intermediate",
+    "planType": "bro",
     "day": "Monday",
     "duration": 60,
     "exercises": [
@@ -81,8 +87,9 @@
     "description": "Dedicated back hypertrophy workout.",
     "goal": "upper body",
     "difficulty": "intermediate",
+    "planType": "bro",
     "day": "Tuesday",
-   " duration": 60,
+    "duration": 60,
     "exercises": [
       { "name": "Deadlift", "sets": 3, "reps": "5", "rest": "120s" },
       { "name": "Pull-Ups", "sets": 3, "reps": "8-10", "rest": "90s" }
@@ -91,8 +98,9 @@
   {
     "name": "Shoulders Day (Bro Split)",
     "description": "Dedicated shoulder hypertrophy workout.",
-   " goal": "upper body",
+    "goal": "upper body",
     "difficulty": "intermediate",
+    "planType": "bro",
     "day": "Wednesday",
     "duration": 60,
     "exercises": [
@@ -105,8 +113,9 @@
     "description": "Dedicated biceps and triceps workout.",
     "goal": "upper body",
     "difficulty": "intermediate",
+    "planType": "bro",
     "day": "Thursday",
-    "duration":50,
+    "duration": 50,
     "exercises": [
       { "name": "Barbell Bicep Curls", "sets": 3, "reps": "10", "rest": "60s" },
       { "name": "Skull Crushers", "sets": 3, "reps": "10", "rest": "60s" }
@@ -115,9 +124,10 @@
   {
     "name": "Legs Day (Bro Split)",
     "description": "Dedicated leg hypertrophy workout.",
-   " goal": "lower body",
+    "goal": "lower body",
     "difficulty": "intermediate",
-   " day": "Friday",
+    "planType": "bro",
+    "day": "Friday",
     "duration": 60,
     "exercises": [
       { "name": "Barbell Back Squat", "sets": 4, "reps": "8-10", "rest": "120s" },

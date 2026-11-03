@@ -49,6 +49,11 @@ const workoutSchema = new mongoose.Schema({
     enum: ['beginner', 'intermediate', 'advanced'],
     default: 'beginner',
   },
+  planType: {
+    type: String,
+    enum: ['upper', 'lower', 'bro', null],
+    default: null,
+  },
   day: {
     type: String,
     enum: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],

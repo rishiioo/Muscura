@@ -89,6 +89,7 @@ const workoutRoutes = require('./routes/workout');
 const subscriptionRoutes = require('./routes/subscription');
 const progressRoutes = require('./routes/progress');
 const adminRoutes = require('./routes/admin');
+const scheduleRoutes = require('./routes/schedule');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
@@ -96,6 +97,7 @@ app.use('/api/workouts', workoutRoutes);
 app.use('/api/subscriptions', subscriptionRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/schedule', scheduleRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

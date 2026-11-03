@@ -1,37 +1,63 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getRecommendedWorkouts } from '../services/api';
-import { Loader2, Calendar } from 'lucide-react';
+import { useToast } from '../components/Toast';
+import { getMySchedule, removeDayWorkout } from '../services/api';
+import { Link } from 'react-router-dom';
+import { Loader2, Calendar, Dumbbell, Trash2 } from 'lucide-react';
+
+const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+
+const recoveryTips = {
+  Monday: 'Light stretching helps recovery.',
+  Tuesday: 'Hydrate and rest your legs.',
+  Wednesday: 'Focus on mobility work.',
+  Thursday: 'Foam roll your muscles.',
+  Friday: 'Get 8 hours of sleep.',
+  Saturday: 'Active recovery walk.',
+  Sunday: 'Rest completely.',
+};
 
 const Schedule = () => {
   const { user } = useAuth();
-  const [weeklySchedule, setWeeklySchedule] = useState([]);
+  const toast = useToast();
+  const [schedule, setSchedule] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [removingDay, setRemovingDay] = useState(null);
 
-  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+  const today = new Date().toLocaleDateString('en-US', { weekday: 'long' });
 
   useEffect(() => {
-    const fetchWorkouts = async () => {
+    const fetchSchedule = async () => {
       setLoading(true);
+      setError(null);
       try {
-        const goal = user?.goal !== 'healthy' ? user?.goal : null;
-        const res = await getRecommendedWorkouts({ goal, difficulty: 'beginner' });
-        
-        // Organize workouts by day
-        const schedule = days.reduce((acc, day) => {
-          acc[day] = res.data.filter(w => w.day === day);
-          return acc;
-        }, {});
-        
-        setWeeklySchedule(schedule);
+        const res = await getMySchedule();
+        setSchedule(res.data);
       } catch (err) {
-        console.error('Error fetching workouts:', err);
+        console.error('Error fetching schedule:', err);
+        setError('Could not load schedule.');
+        toast('Could not load schedule', 'error');
       } finally {
         setLoading(false);
       }
     };
-    fetchWorkouts();
-  }, [user]);
+    fetchSchedule();
+  }, [toast]);
+
+  const handleRemoveDay = async (day) => {
+    setRemovingDay(day);
+    try {
+      const res = await removeDayWorkout(day);
+      setSchedule(res.data);
+      toast('Workout removed', 'success');
+    } catch (err) {
+      console.error('Error removing workout:', err);
+      toast('Failed to remove workout', 'error');
+    } finally {
+      setRemovingDay(null);
+    }
+  };
 
   if (loading) {
     return (
@@ -41,72 +67,75 @@ const Schedule = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-16 flex justify-center">
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+  }
+
+  if (!schedule) {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-16 flex flex-col items-center justify-center">
+        <p className="text-gray-500 text-lg mb-4">You haven't chosen a plan yet.</p>
+        <Link to="/workouts" className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+          Go to Workouts
+        </Link>
+      </div>
+    );
+  }
+
+  const itemsByDay = days.reduce((acc, day) => {
+    const item = schedule.items.find(i => i.day === day);
+    acc[day] = item || { day, workout: null, isRest: true };
+    return acc;
+  }, {});
+
   return (
     <div className="min-h-screen bg-gray-50 pt-16">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">Weekly Schedule</h1>
 
-        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-7">
-            {days.map((day) => (
-              <div key={day} className="border-r border-gray-100 last:border-r-0">
-                <div className="bg-gray-50 p-3">
-                  <h3 className="font-semibold text-gray-900 text-center">{day}</h3>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
+          {days.map((day) => {
+            const item = itemsByDay[day];
+            const workout = item.workout;
+            const isToday = day === today;
+            return (
+              <div key={day} className={`bg-white rounded-xl shadow-sm p-4 ${isToday ? 'ring-2 ring-blue-500' : ''}`}>
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="font-semibold text-gray-900">{day}</h3>
+                  {isToday && <span className="text-xs text-blue-600 font-medium">Today</span>}
                 </div>
-                <div className="p-2">
-                  {weeklySchedule[day]?.length > 0 ? (
-                    weeklySchedule[day].map((workout) => (
-                      <div key={workout._id} className="p-2 mb-2 bg-blue-50 rounded-lg">
-                        <p className="font-medium text-sm text-blue-900">{workout.name}</p>
-                        <p className="text-xs text-blue-700">{workout.exercises?.length} exercises</p>
-                      </div>
-                    ))
-                  ) : (
-                    <p className="text-xs text-gray-400 text-center py-2">Rest day</p>
-                  )}
-                </div>
+                {workout ? (
+                  <div>
+                    <p className="font-medium text-gray-900">{workout.name}</p>
+                    <p className="text-xs text-gray-500">{workout.goal}</p>
+                    <p className="text-xs text-gray-500">{workout.duration} min · {workout.exercises?.length} exercises</p>
+                    <div className="mt-2 flex gap-2">
+                      <Link to={`/workouts/${workout._id}`} className="text-blue-600 text-xs hover:underline">
+                        View Details
+                      </Link>
+                      <button
+                        onClick={() => handleRemoveDay(day)}
+                        disabled={removingDay === day}
+                        className="text-red-500 text-xs hover:underline flex items-center gap-1"
+                      >
+                        <Trash2 className="h-3 w-3" />
+                        {removingDay === day ? 'Removing...' : 'Remove'}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-4">
+                    <p className="text-gray-500 text-sm font-medium">Rest day</p>
+                    <p className="text-xs text-gray-400 mt-1">{recoveryTips[day]}</p>
+                  </div>
+                )}
               </div>
-            ))}
-          </div>
-        </div>
-
-        <div className="mt-6 bg-white rounded-xl p-4 shadow-sm">
-          <h3 className="font-semibold text-gray-900 mb-3">YouTube Workout Tutorials</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <div className="p-4 border border-gray-200 rounded-lg">
-              <iframe
-                width="100%"
-                height="150"
-                src="https://www.youtube.com/embed/CyM6mPQ2flA"
-                title="Upper Body Workout"
-                style={{ borderRadius: '8px' }}
-                allowFullScreen
-              />
-              <p className="mt-2 text-sm font-medium text-gray-700">Upper Body Workout</p>
-            </div>
-            <div className="p-4 border border-gray-200 rounded-lg">
-              <iframe
-                width="100%"
-                height="150"
-                src="https://www.youtube.com/embed/iK3eERQQ7tA"
-                title="Lower Body Workout"
-                style={{ borderRadius: '8px' }}
-                allowFullScreen
-              />
-              <p className="mt-2 text-sm font-medium text-gray-700">Lower Body Workout</p>
-            </div>
-            <div className="p-4 border border-gray-200 rounded-lg">
-              <iframe
-                width="100%"
-                height="150"
-                src="https://www.youtube.com/embed/V8f8uTJQ8bQ"
-                title="Full Body HIIT"
-                style={{ borderRadius: '8px' }}
-                allowFullScreen
-              />
-              <p className="mt-2 text-sm font-medium text-gray-700">Full Body HIIT</p>
-            </div>
-          </div>
+            );
+          })}
         </div>
       </div>
     </div>

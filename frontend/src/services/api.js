@@ -38,6 +38,13 @@ export const getWorkouts = (params) => api.get('/workouts', { params });
 export const getWorkoutById = (id) => api.get(`/workouts/${id}`);
 export const getRecommendedWorkouts = (params) => api.get('/workouts/recommend', { params });
 
+// Schedule API
+export const getMySchedule = () => api.get('/schedule/me');
+export const selectPlan = (data) => api.post('/schedule/select-plan', data);
+export const setDayWorkout = (day, data) => api.put(`/schedule/day/${day}`, data);
+export const removeDayWorkout = (day) => api.delete(`/schedule/day/${day}`);
+export const clearSchedule = () => api.delete('/schedule/me');
+
 // Subscription API
 export const getSubscriptions = () => api.get('/subscriptions');
 export const getSubscriptionById = (id) => api.get(`/subscriptions/${id}`);

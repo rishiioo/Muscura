@@ -4,12 +4,18 @@ const Workout = require('../models/Workout');
 // @route   GET /api/workouts
 exports.getWorkouts = async (req, res) => {
   try {
-    const { goal, difficulty, day, search, page = 1, limit = 12 } = req.query;
+    const { goal, difficulty, day, search, planType, page = 1, limit = 12 } = req.query;
     let query = {};
 
     if (goal) query.goal = goal;
     if (difficulty) query.difficulty = difficulty;
     if (day) query.day = day;
+    if (planType) {
+      if (!['upper', 'lower', 'bro'].includes(planType)) {
+        return res.status(400).json({ message: 'Invalid planType. Must be upper, lower, or bro.' });
+      }
+      query.planType = planType;
+    }
     if (search) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },

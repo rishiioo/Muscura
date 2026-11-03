@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../components/Toast';
-import { getWorkouts } from '../services/api';
+import { getWorkouts, getMySchedule, selectPlan } from '../services/api';
 import { WorkoutCard } from '../components/WorkoutCard';
-import { Loader2, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Loader2, Filter, ChevronLeft, ChevronRight, Dumbbell, Users, Calendar } from 'lucide-react';
+
+const planOptions = [
+  { id: 'upper', name: 'Upper Body Plan', icon: Dumbbell, days: '3 days/week', description: 'Focuses on chest, back, shoulders, and arms (Mon, Wed, Fri).' },
+  { id: 'lower', name: 'Lower Body Plan', icon: Users, days: '3 days/week', description: 'Focuses on quads, hamstrings, glutes, calves, and core (Tue, Thu, Sat).' },
+  { id: 'bro', name: 'Bro Split', icon: Calendar, days: '5 days/week', description: 'One muscle group per day: Chest, Back, Shoulders, Arms, Legs (Mon–Fri).' },
+];
 
 const Workouts = () => {
   const { user } = useAuth();
@@ -18,6 +24,48 @@ const Workouts = () => {
     difficulty: '',
     day: '',
   });
+
+  // Plan selection state
+  const [selectedPlan, setSelectedPlan] = useState(null);
+  const [previewWorkouts, setPreviewWorkouts] = useState([]);
+  const [previewLoading, setPreviewLoading] = useState(false);
+  const [addingPlan, setAddingPlan] = useState(false);
+  const [currentSchedule, setCurrentSchedule] = useState(null);
+  const [confirmReplace, setConfirmReplace] = useState(false);
+  const [activePlan, setActivePlan] = useState(null);
+
+  // Fetch current schedule to know active plan
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      try {
+        const res = await getMySchedule();
+        setCurrentSchedule(res.data);
+        setActivePlan(res.data?.planType || null);
+      } catch (err) {
+        console.error('Could not fetch schedule:', err);
+      }
+    };
+    fetchSchedule();
+  }, []);
+
+  // Fetch workouts for preview when selectedPlan changes
+  useEffect(() => {
+    if (!selectedPlan) return;
+    setPreviewLoading(true);
+    const fetchPreview = async () => {
+      try {
+        const params = { planType: selectedPlan, page: 1, limit: 100 };
+        const res = await getWorkouts(params);
+        setPreviewWorkouts(res.data.data || []);
+      } catch (err) {
+        console.error('Error fetching preview workouts:', err);
+        toast('Could not load plan workouts', 'error');
+      } finally {
+        setPreviewLoading(false);
+      }
+    };
+    fetchPreview();
+  }, [selectedPlan, toast]);
 
   useEffect(() => {
     const fetchWorkouts = async () => {
@@ -50,10 +98,122 @@ const Workouts = () => {
     setPage(1);
   };
 
+  const handleAddPlan = async () => {
+    if (!selectedPlan) return;
+    if (currentSchedule) {
+      setConfirmReplace(true);
+      return;
+    }
+    await doAddPlan();
+  };
+
+  const doAddPlan = async () => {
+    setAddingPlan(true);
+    try {
+      const res = await selectPlan({ planType: selectedPlan });
+      setCurrentSchedule(res.data);
+      setActivePlan(res.data.planType);
+      toast('Plan added to your schedule!', 'success');
+    } catch (err) {
+      console.error('Error adding plan:', err);
+      toast('Failed to add plan', 'error');
+    } finally {
+      setAddingPlan(false);
+      setConfirmReplace(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pt-16">
       <div className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold text-gray-900 mb-6">Your Workouts</h1>
+
+        {/* Plan Selection Cards */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-semibold mb-4">Choose a Plan</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {planOptions.map((plan) => (
+              <div
+                key={plan.id}
+                onClick={() => setSelectedPlan(plan.id)}
+                className={`bg-white rounded-xl shadow-sm p-6 cursor-pointer border-2 transition-all ${selectedPlan === plan.id ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-100 hover:border-gray-300'}`}
+              >
+                <div className="flex items-center mb-4">
+                  <plan.icon className="h-8 w-8 text-blue-600 mr-3" />
+                  <h3 className="text-xl font-bold">{plan.name}</h3>
+                  {activePlan === plan.id && (
+                    <span className="ml-auto px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">Active</span>
+                  )}
+                </div>
+                <p className="text-gray-500 text-sm mb-2">{plan.days}</p>
+                <p className="text-gray-600 text-sm">{plan.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Preview section */}
+        {selectedPlan && (
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-semibold">Preview: {planOptions.find(p => p.id === selectedPlan)?.name}</h2>
+              <button
+                onClick={handleAddPlan}
+                disabled={addingPlan}
+                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 flex items-center gap-2"
+              >
+                {addingPlan ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                Add this plan to my schedule
+              </button>
+            </div>
+            {previewLoading ? (
+              <div className="flex justify-center py-8">
+                <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+              </div>
+            ) : previewWorkouts.length === 0 ? (
+              <p className="text-gray-500">No workouts found for this plan.</p>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {previewWorkouts.map((workout) => (
+                  <WorkoutCard key={workout._id} workout={workout} />
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Confirm Replace Dialog */}
+        {confirmReplace && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white rounded-xl p-6 max-w-md mx-4">
+              <h3 className="text-lg font-bold mb-2">Replace Schedule?</h3>
+              <p className="text-gray-600 mb-4">This will replace your current schedule. Do you want to continue?</p>
+              <div className="flex gap-3 justify-end">
+                <button
+                  onClick={() => setConfirmReplace(false)}
+                  className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={doAddPlan}
+                  disabled={addingPlan}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {addingPlan ? 'Adding...' : 'Replace'}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Success message with View Schedule button */}
+        {currentSchedule && activePlan && (
+          <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center justify-between">
+            <span className="text-green-800">Your current plan: <strong>{planOptions.find(p => p.id === activePlan)?.name}</strong></span>
+            <a href="/schedule" className="text-blue-600 hover:underline font-medium">View my schedule</a>
+          </div>
+        )}
 
         {/* Filters */}
         <div className="bg-white rounded-xl p-4 mb-6 flex flex-col sm:flex-row gap-4">
