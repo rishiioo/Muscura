@@ -11,6 +11,9 @@ const {
 
 router.post('/register', registerValidation, authController.register);
 router.post('/login', loginValidation, authController.login);
+router.post('/google', authController.googleLogin);
+router.post('/forgotpassword', authController.forgotPassword);
+router.put('/resetpassword/:resettoken', authController.resetPassword);
 router.get('/me', auth, authController.getMe);
 router.put('/profile', auth, profileUpdateValidation, authController.updateProfile);
 router.put('/changepassword', auth, changePasswordValidation, authController.changePassword);

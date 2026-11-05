@@ -64,6 +64,9 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: null,
   },
+  resetPasswordToken: String,
+  resetPasswordExpire: Date,
+  googleId: String,
   reminderSentAt: {
     type: Date,
     default: null,

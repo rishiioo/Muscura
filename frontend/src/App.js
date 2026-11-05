@@ -8,6 +8,8 @@ import {
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedLayout from "./components/ProtectedLayout";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import LandingPage from "./pages/LandingPage";
 import Dashboard from "./pages/Dashboard";
 import Workouts from "./pages/Workouts";
@@ -32,6 +34,8 @@ function App() {
       <Router>
         <Routes>
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
           <Route path="/" element={<LandingPage />} />
           <Route path="/dashboard" element={<ProtectedLayout><Dashboard /></ProtectedLayout>} />
           <Route path="/workouts" element={<ProtectedLayout><Workouts /></ProtectedLayout>} />
