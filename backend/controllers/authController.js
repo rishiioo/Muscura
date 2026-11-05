@@ -7,7 +7,7 @@ const sendEmail = require('../utils/mailer');
 
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
-...
+
 // @desc    Google Login
 // @route   POST /api/auth/google
 exports.googleLogin = async (req, res) => {
