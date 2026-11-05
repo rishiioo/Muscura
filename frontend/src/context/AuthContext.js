@@ -38,6 +38,13 @@ export const AuthProvider = ({children}) => {
     return res.data;
   };
 
+  const googleLogin = async (idToken) => {
+    const res = await api.post('/auth/google', { idToken });
+    localStorage.setItem('token', res.data.token);
+    setUser(res.data);
+    return res.data;
+  };
+
   const forgotPassword = async (email) => {
     return await api.post('/auth/forgotpassword', { email });
   };
@@ -56,6 +63,7 @@ export const AuthProvider = ({children}) => {
     loading,
     register,
     login,
+    googleLogin,
     forgotPassword,
     resetPassword,
     logout,

@@ -3,6 +3,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Dumbbell } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
+import { GoogleLogin } from '@react-oauth/google';
+
 const Login = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [formData, setFormData] = useState({
@@ -14,7 +16,7 @@ const Login = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   
-  const { login, register } = useAuth();
+  const { login, register, googleLogin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -175,6 +177,20 @@ const Login = () => {
               : "Don't have an account? Sign up"}
           </button>
         </div>
+
+        {!isRegister && (
+          <div className="mt-4 flex justify-center">
+            <GoogleLogin
+              onSuccess={(credentialResponse) => {
+                googleLogin(credentialResponse.credential);
+                navigate(from, { replace: true });
+              }}
+              onError={() => {
+                setError('Google Login failed');
+              }}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
