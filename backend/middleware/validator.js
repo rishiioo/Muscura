@@ -16,6 +16,11 @@ const registerValidation = [
   validate
 ];
 
+const googleLoginValidation = [
+  body('idToken').notEmpty().withMessage('Google ID token is required'),
+  validate
+];
+
 const loginValidation = [
   body('email').isEmail().withMessage('Please provide a valid email'),
   body('password').notEmpty().withMessage('Password is required'),
@@ -37,9 +42,10 @@ const progressValidation = [
 
 const workoutValidation = [
   body('name').notEmpty().withMessage('Workout name is required'),
-  body('goal').isIn(['cut', 'bulk', 'healthy']).withMessage('Goal must be cut, bulk, or healthy'),
+  body('goal').isIn(['cut', 'bulk', 'healthy', 'upper body', 'lower body', 'full body']).withMessage('Goal must be cut, bulk, healthy, upper body, lower body, or full body'),
   body('difficulty').isIn(['beginner', 'intermediate', 'advanced']).withMessage('Invalid difficulty'),
   body('duration').isInt({ min: 1 }).withMessage('Duration must be a positive integer'),
+  body('planType').optional().isIn(['upper', 'lower', 'bro']).withMessage('Invalid planType'),
   validate
 ];
 

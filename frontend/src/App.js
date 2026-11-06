@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 import ProtectedLayout from "./components/ProtectedLayout";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
@@ -43,7 +44,7 @@ function App() {
           <Route path="/schedule" element={<ProtectedLayout><Schedule /></ProtectedLayout>} />
           <Route path="/progress" element={<ProtectedLayout><Progress /></ProtectedLayout>} />
           <Route path="/profile" element={<ProtectedLayout><Profile /></ProtectedLayout>} />
-          <Route path="/admin" element={<ProtectedLayout><AdminDashboard /></ProtectedLayout>} />
+          <Route path="/admin" element={<ProtectedRoute adminOnly={true}><ProtectedLayout><AdminDashboard /></ProtectedLayout></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Router>

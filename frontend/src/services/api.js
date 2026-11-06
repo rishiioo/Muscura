@@ -65,7 +65,7 @@ export const updateUserPreferences = (data) => api.put('/users/preferences', dat
 
 // Gym Owner / Admin API
 export const getAdminStats = () => api.get('/admin/stats');
-export const getAdminUsers = () => api.get('/admin/users');
+export const getAdminUsers = (params) => api.get('/admin/users', { params });
 export const updateAdminUserStatus = (id, isActive) =>
   api.put(`/admin/users/${id}/status`, { isActive });
 export const deleteAdminUser = (id) => api.delete(`/admin/users/${id}`);

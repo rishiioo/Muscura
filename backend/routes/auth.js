@@ -6,12 +6,13 @@ const {
   registerValidation,
   loginValidation,
   changePasswordValidation,
-  profileUpdateValidation
+  profileUpdateValidation,
+  googleLoginValidation
 } = require('../middleware/validator.js');
 
 router.post('/register', registerValidation, authController.register);
 router.post('/login', loginValidation, authController.login);
-router.post('/google', authController.googleLogin);
+router.post('/google', googleLoginValidation, authController.googleLogin);
 router.post('/forgotpassword', authController.forgotPassword);
 router.put('/resetpassword/:resettoken', authController.resetPassword);
 router.get('/me', auth, authController.getMe);

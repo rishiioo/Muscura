@@ -106,7 +106,20 @@ exports.updateUserStatus = async (req, res) => {
 
     user.isActive = isActive;
     await user.save();
-    res.json(user);
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      phone: user.phone,
+      weight: user.weight,
+      height: user.height,
+      goal: user.goal,
+      gymExperience: user.gymExperience,
+      dietPreference: user.dietPreference,
+      subscription: user.subscription,
+      isActive: user.isActive,
+    });
   } catch (error) {
     console.error('UpdateUserStatus error:', error);
     res.status(500).json({ message: "Server error" });

@@ -49,12 +49,14 @@ const Dashboard = () => {
               {getGoalDisplay(user?.goal)} • {getDietDisplay(user?.dietPreference)}
             </p>
           </div>
-          <Link
-            to="/admin"
-            className="bg-blue-50 text-blue-700 px-4 py-2 rounded-xl text-xs font-bold border border-blue-100 hover:bg-blue-100 transition-colors flex items-center gap-2 shadow-2xs"
-          >
-            🛡️ Gym Owner Dashboard
-          </Link>
+          {user?.role === 'admin' && (
+            <Link
+              to="/admin"
+              className="bg-blue-50 text-blue-700 px-4 py-2 rounded-xl text-xs font-bold border border-blue-100 hover:bg-blue-100 transition-colors flex items-center gap-2 shadow-2xs"
+            >
+              🛡️ Gym Owner Dashboard
+            </Link>
+          )}
         </div>
 
         {/* Subscription Status */}

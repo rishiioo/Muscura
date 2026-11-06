@@ -1,9 +1,9 @@
 const crypto = require('crypto');
-const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const User = require('../models/User');
 const Subscription = require('../models/Subscription');
 const sendEmail = require('../utils/mailer');
+const { generateToken } = require('../utils/auth');
 
 const { OAuth2Client } = require('google-auth-library');
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
@@ -17,15 +17,21 @@ exports.googleLogin = async (req, res) => {
       idToken,
       audience: process.env.GOOGLE_CLIENT_ID,
     });
-    const { email, name, sub: googleId } = ticket.getPayload();
+    const { email, name, sub: googleId, email_verified } = ticket.getPayload();
 
     let user = await User.findOne({ email });
     if (!user) {
-      user = new User({ email, name, googleId, password: Math.random().toString(36).slice(-8) });
+      if (!email_verified) {
+        return res.status(403).json({ message: 'Unverified email address' });
+      }
+      const password = crypto.randomBytes(8).toString('hex');
+      user = new User({ email, name, googleId, password });
       await user.save();
     } else if (!user.googleId) {
       user.googleId = googleId;
       await user.save();
+    } else if (user.isActive === false) {
+      return res.status(403).json({ message: 'Account deactivated' });
     }
 
     const token = generateToken(user._id);
@@ -79,7 +85,7 @@ exports.forgotPassword = async (req, res) => {
     const { email } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.json({ message: 'If that email address is in our database, we will send you an email to reset your password.' });
     }
 
     const resetToken = crypto.randomBytes(20).toString('hex');
@@ -88,11 +94,11 @@ exports.forgotPassword = async (req, res) => {
     await user.save();
 
     const resetUrl = `${process.env.FRONTEND_URL}/reset-password/${resetToken}`;
-    const message = `You are receiving this email because you (or someone else) have requested the reset of a password. Please make a PUT request to: \n\n ${resetUrl}`;
+    const message = `You are receiving this email because you (or someone else) have requested the reset of a password.\n\nPlease click on the following link, or paste this into your browser to complete the process:\n\n${resetUrl}\n\nIf you did not request this, please ignore this email.`;
 
     try {
       await sendEmail(email, 'Password reset token', message);
-      res.json({ message: 'Email sent' });
+      res.json({ message: 'If that email address is in our database, we will send you an email to reset your password.' });
     } catch (err) {
       user.resetPasswordToken = undefined;
       user.resetPasswordExpire = undefined;
@@ -253,8 +259,7 @@ exports.changePassword = async (req, res) => {
       return res.status(400).json({ message: 'Current password is incorrect' });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(newPassword, salt);
+    user.password = newPassword;
     await user.save();
 
     res.json({ message: 'Password updated successfully' });

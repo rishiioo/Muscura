@@ -77,6 +77,7 @@ app.use(generalLimiter);
 // Apply strict rate limit to login and register routes
 app.use('/api/auth/login', authLimiter);
 app.use('/api/auth/register', authLimiter);
+app.use('/api/auth/google', authLimiter);
 
 // Middleware
 app.use(express.json());

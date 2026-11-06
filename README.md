@@ -53,23 +53,25 @@ A comprehensive MERN stack (MongoDB, Express, React, Node.js) gym management app
 ```
 Muscura/
 ├── backend/
-│   ├── config/           # Database configuration
-│   ├── controllers/      # Business logic
-│   ├── middleware/       # Auth middleware
-│   ├── models/           # Mongoose models
-│   ├── routes/           # API routes
-│   ├── services/         # Database services
-│   └── server.js         # Main server file
+├── backend/
+│   ├── config/
+│   ├── controllers/
+│   ├── middleware/
+│   ├── models/
+│   ├── routes/
+│   ├── services/
+│   ├── scripts/
+│   └── server.js
 ├── frontend/
-│   ├── public/           # Static files
-│   ├── src/
-│   │   ├── components/   # Reusable components
-│   │   ├── context/      # React context
-│   │   ├── pages/        # Page components
-│   │   ├── services/     # API services
-│   │   ├── App.js
-│   │   └── index.js
-│   └── package.json
+│   ├── public/
+│   └── src/
+│       ├── components/
+│       ├── context/
+│       ├── pages/
+│       ├── services/
+│       ├── App.js
+│       └── index.js
+├── README.md
 └── README.md
 ```
 
@@ -154,16 +156,34 @@ The app will be available at `http://localhost:3000`
 
 ## Default Admin Account
 
-Create an admin user by adding this to your database:
+Create an admin user using the provided script:
 
-```javascript
-{
-  name: "Admin",
-  email: "admin@muscura.com",
-  password: "admin123",
-  role: "admin"
-}
+```bash
+npm run create-admin
 ```
+
+**IMPORTANT**: This script will prompt for:
+- **ADMIN_EMAIL**: Email for the admin account (e.g., "admin@muscura.com")
+- **ADMIN_PASSWORD**: Password for the admin account (e.g., "adminStrongPassword")
+
+The script will create an admin user with these credentials and display the generated admin credentials for your records.
+
+**Do NOT hardcode the admin password in your `.env` file or commit it to version control. Use the script with environment variables or input securely.**
+
+## Default Subscription Plans
+
+1. **Basic Plan** - $19/month - Standard workout access
+2. **Premium Plan** - $39/month - All workouts + nutrition plans
+3. **Elite Plan** - $59/month - Personal trainer + all features
+
+## Admin Routes (Protected)
+
+The following routes require admin privileges:
+- `GET /api/admin/stats` - Get dashboard statistics
+- `GET /api/admin/users` - Get all users (with pagination)
+- `PUT /api/admin/users/:id/status` - Update user status (activate/deactivate)
+- `DELETE /api/admin/users/:id` - Delete a user account
+- `GET /api/admin/users/:id` - View detailed user information
 
 ## Default Subscription Plans
 
