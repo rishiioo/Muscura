@@ -61,5 +61,6 @@ module.exports = {
   changePasswordValidation,
   progressValidation,
   workoutValidation,
-  profileUpdateValidation
+  profileUpdateValidation,
+  googleLoginValidation
 };
