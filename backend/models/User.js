@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, 'Password is required'],
-    minlength: 6,
+    minlength: 8,
   },
   role: {
     type: String,
@@ -75,14 +75,8 @@ const userSchema = new mongoose.Schema({
     type: Boolean,
     default: true,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now,
-  },
+}, {
+  timestamps: true,
 });
 
 // Hash password before saving
@@ -97,11 +91,5 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
-
-// Update timestamp
-userSchema.pre('findOneAndUpdate', function (next) {
-  this.update({}, { $set: { updatedAt: new Date() } });
-  next();
-});
 
 module.exports = mongoose.model('User', userSchema);

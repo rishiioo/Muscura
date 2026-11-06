@@ -1,12 +1,10 @@
-const dns = require('dns');
-dns.setServers(['8.8.8.8', '1.1.1.1']);
-
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const path = require('path');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
 const connectDB = require('./config/db');
 
 dotenv.config({ path: path.join(__dirname, '.env') });
@@ -30,25 +28,26 @@ if (process.env.NODE_ENV === 'production' || process.env.ENABLE_CRON === 'true')
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Trust proxy (needed for rate limiting behind Render / load balancers)
+app.set('trust proxy', 1);
+
 // Security Middlewares
 app.use(helmet());
 
-// CORS configuration
-const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.replace(/\/$/, '') : '';
-const isDev = process.env.NODE_ENV !== 'production';
+// Sanitize MongoDB query operators to prevent NoSQL injection
+app.use(mongoSanitize());
 
-// Allow Vercel deployments (production + previews) since the frontend is hosted there.
-const isVercelOrigin = (origin) => /\.vercel\.app$/.test(origin);
+// CORS configuration - allow only specific origins
+const clientUrl = process.env.CLIENT_URL ? process.env.CLIENT_URL.replace(/\/$/, '') : '';
+const frontendUrl = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.replace(/\/$/, '') : '';
+
+const allowedOrigins = [clientUrl, frontendUrl, 'http://localhost:3000'].filter(Boolean);
 
 const corsOptions = {
   origin: (origin, callback) => {
-    // Allow non-browser requests (no Origin header) and server-to-server calls.
     if (!origin) return callback(null, true);
     const cleanOrigin = origin.replace(/\/$/, '');
-    if (clientUrl && cleanOrigin === clientUrl) return callback(null, true);
-    if (isDev && cleanOrigin === 'http://localhost:3000') return callback(null, true);
-    // Echo the origin back (required when credentials: true, cannot use '*').
-    if (isVercelOrigin(cleanOrigin)) return callback(null, cleanOrigin);
+    if (allowedOrigins.includes(cleanOrigin)) return callback(null, true);
     return callback(null, false);
   },
   credentials: true
@@ -86,6 +85,11 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.get('/', (req, res) => {
   res.json({ message: 'Muscura Backend API Running' });
+});
+
+// Health check route
+app.get('/health', (req, res) => {
+  res.json({ status: 'ok', uptime: process.uptime() });
 });
 
 // Import routes

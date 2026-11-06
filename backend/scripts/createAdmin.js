@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
 const dotenv = require('dotenv');
 const path = require('path');
 
@@ -26,13 +25,11 @@ const createAdmin = async () => {
       process.exit(0);
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
+    // Pass the plain password; the User model's pre-save hook hashes it automatically.
     const admin = new User({
       name,
       email,
-      password: hashedPassword,
+      password,
       role: 'admin',
     });
 
