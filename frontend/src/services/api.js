@@ -1,73 +1,57 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-
 const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+  baseURL: process.env.REACT_APP_API_URL || '',
 });
 
-// Request interceptor: attach token from localStorage on every request
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => Promise.reject(error)
-);
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 
-// Response interceptor: log out and redirect on 401
-api.interceptors.response.use(
-  (response) => response,
-  (error) => {
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem('token');
-      window.location.href = '/login';
-    }
-    return Promise.reject(error);
-  }
-);
+// Existing exports
+export const getProgressLogs = () => api.get('/api/progress');
+export const getWeightChart = () => api.get('/api/progress/chart');
+export const getMySubscription = () => api.get('/api/users/me/subscription');
 
-// Workout API
-export const getWorkouts = (params) => api.get('/workouts', { params });
-export const getWorkoutById = (id) => api.get(`/workouts/${id}`);
-export const getRecommendedWorkouts = (params) => api.get('/workouts/recommend', { params });
+export const logMeal = (data) => api.post('/api/nutrition/meals', data);
+export const getMeals = (params) => api.get('/api/nutrition/meals', { params });
+export const getDailyNutrition = (params) => api.get('/api/nutrition/meals/summary', { params });
+export const searchFoods = (q) => api.get('/api/nutrition/foods/search', { params: { q } });
 
-// Schedule API
-export const getMySchedule = () => api.get('/schedule/me');
-export const selectPlan = (data) => api.post('/schedule/select-plan', data);
-export const setDayWorkout = (day, data) => api.put(`/schedule/day/${day}`, data);
-export const removeDayWorkout = (day) => api.delete(`/schedule/day/${day}`);
-export const clearSchedule = () => api.delete('/schedule/me');
+export const addBodyMetric = (data) => api.post('/api/metrics', data);
+export const getBodyMetrics = () => api.get('/api/metrics');
+export const getMeasurementsChart = () => api.get('/api/metrics/chart');
 
-// Subscription API
-export const getSubscriptions = () => api.get('/subscriptions');
-export const getSubscriptionById = (id) => api.get(`/subscriptions/${id}`);
-export const purchaseSubscription = (subscriptionId) =>
-  api.post('/subscriptions/purchase', { subscriptionId });
-export const getMySubscription = () => api.get('/subscriptions/me');
+export const addPR = (data) => api.post('/api/metrics/pr', data);
+export const getPRs = () => api.get('/api/metrics/pr');
 
-// Progress API
-export const getProgressLogs = (limit) =>
-  limit ? api.get(`/progress?limit=${limit}`) : api.get('/progress');
-export const getWeightChart = () => api.get('/progress/chart');
-export const addProgressLog = (data) => api.post('/progress', data);
-export const updateProgressLog = (id, data) => api.put(`/progress/${id}`, data);
-export const deleteProgressLog = (id) => api.delete(`/progress/${id}`);
+export const listChallenges = () => api.get('/api/challenges');
+export const joinChallenge = (id) => api.post(`/api/challenges/join/${id}`);
+export const getUserChallengeProgress = () => api.get('/api/challenges/progress');
+export const updateChallengeProgress = (data) => api.post('/api/challenges/progress', data);
+export const getLeaderboard = (params) => api.get('/api/challenges/leaderboard', { params });
 
-// User API
-export const updateUserPreferences = (data) => api.put('/users/preferences', data);
+// Admin exports - aliases for frontend compatibility
+export const getAdminStats = () => api.get('/api/admin/stats');
+export const getAdminUsers = (params) => api.get('/api/admin/users', { params });
+export const updateAdminUserStatus = (id, isActive) => api.put(`/api/admin/users/${id}/status`, { isActive });
+export const deleteAdminUser = (id) => api.delete(`/api/admin/users/${id}`);
 
-// Gym Owner / Admin API
-export const getAdminStats = () => api.get('/admin/stats');
-export const getAdminUsers = (params) => api.get('/admin/users', { params });
-export const updateAdminUserStatus = (id, isActive) =>
-  api.put(`/admin/users/${id}/status`, { isActive });
-export const deleteAdminUser = (id) => api.delete(`/admin/users/${id}`);
+// User exports
+export const updateUserPreferences = (data) => api.put('/api/users/preferences', data);
+
+// Schedule exports - aliases for frontend compatibility
+export const getMySchedule = () => api.get('/api/schedule/me');
+export const setDayWorkout = (day, data) => api.put(`/api/schedule/day/${day}`, data);
+export const removeDayWorkout = (day) => api.delete(`/api/schedule/day/${day}`);
+
+// Workout exports - aliases for frontend compatibility
+// Workout exports - aliases for frontend compatibility
+export const getWorkouts = (params) => api.get('/api/workouts', { params });
+export const getWorkoutById = (id) => api.get(`/api/workouts/${id}`);
+export const addProgressLog = (data) => api.post('/api/progress', data);
+export const selectPlan = (data) => api.post('/api/schedule/select-plan', data);
 
 export default api;

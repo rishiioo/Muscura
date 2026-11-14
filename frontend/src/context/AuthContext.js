@@ -15,7 +15,7 @@ export const AuthProvider = ({children}) => {
     const token = localStorage.getItem('token');
     if (token) {
       api
-        .get('/auth/me')
+        .get('/api/auth/me')
         .then((res) => setUser(res.data))
         .catch(() => localStorage.removeItem('token'))
         .finally(() => setLoading(false));
@@ -25,32 +25,32 @@ export const AuthProvider = ({children}) => {
   }, []);
 
   const register = async (name, email, password, phone) => {
-    const res = await api.post('/auth/register', {name, email, password, phone});
+    const res = await api.post('/api/auth/register', {name, email, password, phone});
     localStorage.setItem('token', res.data.token);
     setUser(res.data);
     return res.data;
   };
 
   const login = async (email, password) => {
-    const res = await api.post('/auth/login', {email, password});
+    const res = await api.post('/api/auth/login', {email, password});
     localStorage.setItem('token', res.data.token);
     setUser(res.data);
     return res.data;
   };
 
   const googleLogin = async (idToken) => {
-    const res = await api.post('/auth/google', { idToken });
+    const res = await api.post('/api/auth/google', { idToken });
     localStorage.setItem('token', res.data.token);
     setUser(res.data);
     return res.data;
   };
 
   const forgotPassword = async (email) => {
-    return await api.post('/auth/forgotpassword', { email });
+    return await api.post('/api/auth/forgotpassword', { email });
   };
 
   const resetPassword = async (token, password) => {
-    return await api.put(`/auth/resetpassword/${token}`, { password });
+    return await api.put(`/api/auth/resetpassword/${token}`, { password });
   };
 
   const logout = () => {

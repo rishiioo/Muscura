@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Dumbbell, Calendar, Target, CheckCircle, Plus } from 'lucide-react';
-import { setDayWorkout } from '../services/api';
+import { setDayWorkout } from '../services/api'
 import { useToast } from './Toast';
 
 const WorkoutCard = ({ workout, onClick }) => {
