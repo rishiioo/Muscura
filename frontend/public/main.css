@@ -1,36 +1,6 @@
 /* main.css - Integrated styles from workout-master */
 /* Base styles and CSS reset from workout-master */
 
-/* Font face definitions for Muli and custom fonts */
-/* Muli font from Google - use the actual font URL */
-@font-face {
-    font-family: 'Muli';
-    src: url('https://fonts.gstatic.com/s/muli/v15/7Aulp_0qizafT1HYh5tc6BuZNyW8kU3J.woff2') format('woff2');
-    font-weight: 300;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Muli';
-    src: url('https://fonts.gstatic.com/s/muli/v15/7Aulp_ יוְתy5tc6BuZNyW8kU3Y.woff2') format('woff2');
-    font-weight: 400;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Muli';
-    src: url('https://fonts.gstatic.com/s/muli/v15/7Aulp_3ryNgE3i4bתa5tc6BuZNyW8kU3.woff2') format('woff2');
-    font-weight: 700;
-    font-style: normal;
-}
-
-@font-face {
-    font-family: 'Muli';
-    src: url('https://fonts.gstatic.com/s/muli/v15/7Aulp_2z5tc6BuZNyW8kU3J2.woff2') format('woff2');
-    font-weight: 900;
-    font-style: normal;
-}
-
 /* Flaticon font from workout-master */
 @font-face {
     font-family: 'Flaticon';
